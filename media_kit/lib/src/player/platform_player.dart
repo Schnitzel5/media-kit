@@ -5,7 +5,9 @@
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:typed_data';
+import 'package:media_kit/generated/libmpv/bindings.dart' as generated;
 import 'package:meta/meta.dart';
 import 'package:collection/collection.dart';
 
@@ -499,6 +501,11 @@ class PlayerConfiguration {
   /// Default: `null`.
   final Map<String, int>? observeProperties;
 
+  /// Optional callback for event handler.
+  ///
+  /// Default: `null`.
+  final Future<void> Function(Pointer<generated.mpv_event>)? eventHandler;
+
   /// Whether to use [libass](https://github.com/libass/libass) based subtitle rendering for native backend.
   ///
   /// By default, subtitles rendering is Flutter `Widget` based.
@@ -547,6 +554,7 @@ class PlayerConfiguration {
     this.configDir = '',
     this.autoLoadScripts = true,
     this.observeProperties,
+    this.eventHandler,
     this.libass = false,
     this.libassAndroidFont,
     this.libassAndroidFontName,

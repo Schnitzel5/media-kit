@@ -2306,6 +2306,9 @@ class NativePlayer extends PlatformPlayer {
         );
       }
     }
+    if (configuration.eventHandler != null) {
+      await configuration.eventHandler!(event);
+    }
   }
 
   Future<void> _create() {
@@ -2316,7 +2319,8 @@ class NativePlayer extends PlatformPlayer {
         // [VideoController] internally sets --vid=auto upon attachment to enable video rendering & decoding.
         if (!test) 'vid': 'no',
         if (configuration.config) 'config': 'yes',
-        if (configuration.configDir.isNotEmpty) 'config-dir': configuration.configDir,
+        if (configuration.configDir.isNotEmpty)
+          'config-dir': configuration.configDir,
         'load-scripts': configuration.autoLoadScripts ? "yes" : "no",
       };
 
