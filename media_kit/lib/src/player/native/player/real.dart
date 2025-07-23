@@ -2315,6 +2315,9 @@ class NativePlayer extends PlatformPlayer {
         // Set --vid=no by default to prevent redundant video decoding.
         // [VideoController] internally sets --vid=auto upon attachment to enable video rendering & decoding.
         if (!test) 'vid': 'no',
+        if (configuration.config) 'config': 'yes',
+        if (configuration.configDir.isNotEmpty) 'configDir': configuration.configDir,
+        'load-scripts': configuration.autoLoadScripts ? "yes" : "no",
       };
 
       if (Platform.isAndroid &&
@@ -2336,7 +2339,7 @@ class NativePlayer extends PlatformPlayer {
             // Use it if located inside the application bundle, otherwise no worries.
             options.addAll(
               {
-                'config': 'yes',
+                if (!configuration.config) 'config': 'yes',
                 'sub-fonts-dir': directory,
                 'sub-font': configuration.libassAndroidFontName ?? '',
               },
@@ -2447,7 +2450,7 @@ class NativePlayer extends PlatformPlayer {
       }
 
       // Observe the properties to update the state & feed event stream.
-      <String, int>{
+      final observeProperties = <String, int>{
         'pause': generated.mpv_format.MPV_FORMAT_FLAG,
         'time-pos': generated.mpv_format.MPV_FORMAT_DOUBLE,
         'duration': generated.mpv_format.MPV_FORMAT_DOUBLE,
@@ -2468,7 +2471,11 @@ class NativePlayer extends PlatformPlayer {
         'idle-active': generated.mpv_format.MPV_FORMAT_FLAG,
         'sub-text': generated.mpv_format.MPV_FORMAT_NODE,
         'secondary-sub-text': generated.mpv_format.MPV_FORMAT_NODE,
-      }.forEach(
+      };
+      if (configuration.observeProperties != null) {
+        observeProperties.addAll(configuration.observeProperties!);
+      }
+      observeProperties.forEach(
         (property, format) {
           final reply = property.hashCode;
           final name = property.toNativeUtf8();

@@ -479,6 +479,26 @@ class PlayerConfiguration {
   /// Default: `true`.
   final bool async;
 
+  /// Whether to load mpv.conf / input.conf files.
+  ///
+  /// Default: `false`.
+  final bool config;
+
+  /// Path to the directory containing the mpv.conf / input.conf files.
+  ///
+  /// Default: ``.
+  final String configDir;
+
+  /// Whether to auto-load script files.
+  ///
+  /// Default: `true`.
+  final bool autoLoadScripts;
+
+  /// Properties to observe and update the state & feed event stream.
+  ///
+  /// Default: `null`.
+  final Map<String, int>? observeProperties;
+
   /// Whether to use [libass](https://github.com/libass/libass) based subtitle rendering for native backend.
   ///
   /// By default, subtitles rendering is Flutter `Widget` based.
@@ -523,6 +543,10 @@ class PlayerConfiguration {
     this.ready,
     this.muted = false,
     this.async = true,
+    this.config = false,
+    this.configDir = '',
+    this.autoLoadScripts = true,
+    this.observeProperties,
     this.libass = false,
     this.libassAndroidFont,
     this.libassAndroidFontName,
