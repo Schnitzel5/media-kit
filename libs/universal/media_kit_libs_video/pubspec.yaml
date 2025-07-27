@@ -9,8 +9,13 @@ environment:
   flutter: ">=3.7.0"
 
 dependencies:
-  media_kit_libs_android_video: ^1.3.7
-  media_kit_libs_ios_video: ^1.1.4
-  media_kit_libs_macos_video: ^1.1.4
-  media_kit_libs_windows_video: ^1.0.11
-  media_kit_libs_linux: ^1.2.1
+  media_kit_libs_android_video:
+    path: ../../android/media_kit_libs_android_video
+  media_kit_libs_ios_video:
+    path: ../../ios/media_kit_libs_ios_video
+  media_kit_libs_linux:
+    path: ../../linux/media_kit_libs_linux
+  media_kit_libs_macos_video:
+    path: ../../macos/media_kit_libs_macos_video
+  media_kit_libs_windows_video:
+    path: ../../windows/media_kit_libs_windows_video
