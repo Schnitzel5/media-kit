@@ -496,6 +496,11 @@ class PlayerConfiguration {
   /// Default: `true`.
   final bool autoLoadScripts;
 
+  /// Options to be set before player initialization.
+  ///
+  /// Default: `null`.
+  final Map<String, String>? options;
+
   /// Properties to observe and update the state & feed event stream.
   ///
   /// Default: `null`.
@@ -553,6 +558,7 @@ class PlayerConfiguration {
     this.config = false,
     this.configDir = '',
     this.autoLoadScripts = true,
+    this.options,
     this.observeProperties,
     this.eventHandler,
     this.libass = false,

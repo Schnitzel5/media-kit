@@ -2323,6 +2323,9 @@ class NativePlayer extends PlatformPlayer {
           'config-dir': configuration.configDir,
         'load-scripts': configuration.autoLoadScripts ? "yes" : "no",
       };
+      if (configuration.options != null) {
+        options.addAll(configuration.options!);
+      }
 
       if (Platform.isAndroid &&
           configuration.libass &&
