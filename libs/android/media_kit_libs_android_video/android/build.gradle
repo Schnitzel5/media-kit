@@ -58,10 +58,10 @@ task downloadDependencies(type: Exec) {
 
         // Download all *.jar dependencies & verify their MD5 checksums.
         def filesToDownload = [
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/vnext/default-arm64-v8a.jar", "md5": "d9772da60f689e8e9f4f44c5deda9b89", "destination": file("$buildDir/v1.1.5/default-arm64-v8a.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/vnext/default-armeabi-v7a.jar", "md5": "085e4d94b2ae58eeab6f75fe630acdfd", "destination": file("$buildDir/v1.1.5/default-armeabi-v7a.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/vnext/default-x86_64.jar", "md5": "c2192a75a34bd31531f30fdf035bbef2", "destination": file("$buildDir/v1.1.5/default-x86_64.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/vnext/default-x86.jar", "md5": "537e5fb97216a8d7405951e6a407455a", "destination": file("$buildDir/v1.1.5/default-x86.jar")]
+            ["url": "https://github.com/SmartVive/libmpv-android-video-build/releases/download/v1.1.1/full-arm64-v8a.jar", "md5": "50c70e4ec39f7a9fc7a0d491fc99e98e", "destination": file("$buildDir/v1.1.5/default-arm64-v8a.jar")],
+            ["url": "https://github.com/SmartVive/libmpv-android-video-build/releases/download/v1.1.1/full-armeabi-v7a.jar", "md5": "c2e79992c73d75187028652f68174abb", "destination": file("$buildDir/v1.1.5/default-armeabi-v7a.jar")],
+            ["url": "https://github.com/SmartVive/libmpv-android-video-build/releases/download/v1.1.1/full-x86_64.jar", "md5": "0d140d8ba19e10ed355d9621084aaa59", "destination": file("$buildDir/v1.1.5/default-x86_64.jar")],
+            ["url": "https://github.com/SmartVive/libmpv-android-video-build/releases/download/v1.1.1/full-x86.jar", "md5": "279f64d8979e223c83389b2b07c094e9", "destination": file("$buildDir/v1.1.5/default-x86.jar")]
         ]
 
         filesToDownload.each { fileInfo ->
