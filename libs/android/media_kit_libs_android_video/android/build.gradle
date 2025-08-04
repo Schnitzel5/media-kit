@@ -58,10 +58,10 @@ task downloadDependencies(type: Exec) {
 
         // Download all *.jar dependencies & verify their MD5 checksums.
         def filesToDownload = [
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-arm64-v8a.jar", "md5": "3b07fc99a5efd760d4993cd1e45d85bb", "destination": file("$buildDir/v1.1.5/default-arm64-v8a.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-armeabi-v7a.jar", "md5": "1027c36214b8ea9b2b1e01f45a0f7a38", "destination": file("$buildDir/v1.1.5/default-armeabi-v7a.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-x86_64.jar", "md5": "bb188056b1d210a1a16ef1c25d8fde54", "destination": file("$buildDir/v1.1.5/default-x86_64.jar")],
-            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-x86.jar", "md5": "a15619f584c3562b97337a8a502320c3", "destination": file("$buildDir/v1.1.5/default-x86.jar")]
+            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-arm64-v8a.jar", "md5": "fc2f474ece82080d4a2e43505a26c3b1", "destination": file("$buildDir/v1.1.5/default-arm64-v8a.jar")],
+            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-armeabi-v7a.jar", "md5": "eff6d4cb0ccc0dc7da5d5f1cea52031d", "destination": file("$buildDir/v1.1.5/default-armeabi-v7a.jar")],
+            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-x86_64.jar", "md5": "6ed1787178501e3b20fe4ae176e3edab", "destination": file("$buildDir/v1.1.5/default-x86_64.jar")],
+            ["url": "https://github.com/Schnitzel5/libmpv-android-video-build/releases/download/lua/default-x86.jar", "md5": "1e02a96127b667d626ff472db27c4d60", "destination": file("$buildDir/v1.1.5/default-x86.jar")]
         ]
 
         filesToDownload.each { fileInfo ->
