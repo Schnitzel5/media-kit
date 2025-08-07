@@ -35,6 +35,9 @@ class NativeVideoController extends PlatformVideoController {
       Platform.isMacOS ||
       Platform.isIOS;
 
+  /// Whether the video is playing or not
+  bool playing = false;
+
   /// Fixed width of the video output.
   int? width;
 
@@ -65,6 +68,15 @@ class NativeVideoController extends PlatformVideoController {
 
   /// [StreamSubscription] for listening to video [Rect].
   StreamSubscription<VideoParams>? videoParamsSubscription;
+
+  /// [StreamSubscription] for listening to video [Rect].
+  StreamSubscription<bool>? playingSubscription;
+
+  /// [StreamSubscription] for listening to video [Rect].
+  StreamSubscription<Duration>? durationSubscription;
+
+  /// [StreamSubscription] for listening to video [Rect].
+  StreamSubscription<Duration>? seekSubscription;
 
   /// {@macro native_video_controller}
   NativeVideoController._(
@@ -108,6 +120,15 @@ class NativeVideoController extends PlatformVideoController {
         );
       }),
     );
+    playingSubscription = player.stream.playing.listen((e) async {
+      refreshPlaybackState();
+    });
+    durationSubscription = player.stream.duration.listen((e) async {
+      refreshPlaybackState();
+    });
+    seekSubscription = player.stream.seek.listen((e) async {
+      refreshPlaybackState();
+    });
   }
 
   /// {@macro native_video_controller}
@@ -233,6 +254,117 @@ class NativeVideoController extends PlatformVideoController {
         },
       );
     }
+  }
+
+  /// Refreshes playback state (on play/pause, seek or duration change).
+  /// Used to invalidate Picture in Picture view data.
+  @override
+  Future<void> refreshPlaybackState() async {
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    final handle = await player.handle;
+    await _channel.invokeMethod(
+      'VideoOutputManager.RefreshPlaybackState',
+      {
+        'handle': handle.toString(),
+      },
+    );
+  }
+
+  /// Checks whether Picture in Picture is available on current platform.
+  @override
+  Future<bool> isPictureInPictureAvailable() async {
+    if (!Platform.isIOS) {
+      return false;
+    }
+
+    final handle = await player.handle;
+    return await _channel.invokeMethod(
+      'VideoOutputManager.IsPictureInPictureAvailable',
+      {},
+    );
+  }
+
+  /// Enable Picture in Picture.
+  /// Returns true if this is supported on current platofrm.
+  Future<bool> enablePictureInPicture() async {
+    if (!Platform.isIOS) {
+      return false;
+    }
+
+    final handle = await player.handle;
+    return await _channel.invokeMethod(
+      'VideoOutputManager.EnablePictureInPicture',
+      {
+        'handle': handle.toString(),
+      },
+    );
+  }
+
+  /// Disable Picture in Picture.
+  Future<void> disablePictureInPicture() async {
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    final handle = await player.handle;
+    return await _channel.invokeMethod(
+      'VideoOutputManager.DisablePictureInPicture',
+      {
+        'handle': handle.toString(),
+      },
+    );
+  }
+
+  /// Enable automatically entering Picture in Picture when app goes into background.
+  /// Returns true if this is supported on current platofrm.
+  @override
+  Future<bool> enableAutoPictureInPicture() async {
+    if (!Platform.isIOS) {
+      return false;
+    }
+
+    final handle = await player.handle;
+    return await _channel.invokeMethod(
+      'VideoOutputManager.EnableAutoPictureInPicture',
+      {
+        'handle': handle.toString(),
+      },
+    );
+  }
+
+  /// Disables automatically entering Picture in Picture when app goes into background.
+  @override
+  Future<void> disableAutoPictureInPicture() async {
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    final handle = await player.handle;
+    await _channel.invokeMethod(
+      'VideoOutputManager.DisableAutoPictureInPicture',
+      {
+        'handle': handle.toString(),
+      },
+    );
+  }
+
+  /// Enters Picture in Picture view for current video.
+  @override
+  Future<bool> enterPictureInPicture() async {
+    if (!Platform.isIOS) {
+      return false;
+    }
+
+    final handle = await player.handle;
+    return await _channel.invokeMethod(
+      'VideoOutputManager.EnterPictureInPicture',
+      {
+        'handle': handle.toString(),
+      },
+    );
   }
 
   /// Disposes the instance. Releases allocated resources back to the system.

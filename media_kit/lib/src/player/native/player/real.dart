@@ -721,6 +721,9 @@ class NativePlayer extends PlatformPlayer {
       if (!completedController.isClosed) {
         completedController.add(false);
       }
+      if (!seekController.isClosed) {
+        seekController.add(duration);
+      }
     }
 
     if (synchronized) {

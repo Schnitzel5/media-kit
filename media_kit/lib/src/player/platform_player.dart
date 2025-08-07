@@ -112,6 +112,9 @@ abstract class PlatformPlayer {
     subtitleController.stream.distinct(
       (previous, current) => ListEquality().equals(previous, current),
     ),
+    seekController.stream.distinct(
+      (previous, current) => previous == current,
+    ),
     logController.stream.distinct(
       (previous, current) => previous == current,
     ),
@@ -146,6 +149,7 @@ abstract class PlatformPlayer {
         widthController.close(),
         heightController.close(),
         subtitleController.close(),
+        seekController.close(),
         logController.close(),
         errorController.close(),
       ],
@@ -400,6 +404,10 @@ abstract class PlatformPlayer {
   @protected
   final StreamController<List<String>> subtitleController =
       StreamController<List<String>>.broadcast();
+
+  @protected
+  final StreamController<Duration> seekController =
+      StreamController<Duration>.broadcast();
 
   // --------------------------------------------------
 

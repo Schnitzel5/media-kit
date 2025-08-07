@@ -90,6 +90,9 @@ class PlayerStream {
   /// Currently playing video's height.
   final Stream<int?> height;
 
+  /// Fired on video position seek.
+  final Stream<Duration> seek;
+
   /// Currently displayed subtitle.
   final Stream<List<String>> subtitle;
 
@@ -124,6 +127,7 @@ class PlayerStream {
     this.width,
     this.height,
     this.subtitle,
+    this.seek,
     this.log,
     this.error,
   );

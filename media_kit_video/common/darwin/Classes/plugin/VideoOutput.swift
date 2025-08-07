@@ -24,14 +24,15 @@ public class VideoOutput: NSObject {
     return isSim
   }()
 
-  private let handle: OpaquePointer
+  internal let handle: OpaquePointer
   private let enableHardwareAcceleration: Bool
+  private var usingHardwareAcceleration: Bool
   private let registry: FlutterTextureRegistry
   private let textureUpdateCallback: TextureUpdateCallback
-  private let worker: Worker = .init()
+  internal let worker: Worker = .init()
   private var width: Int64?
   private var height: Int64?
-  private var texture: ResizableTextureProtocol!
+  internal var texture: ResizableTextureProtocol!
   private var textureId: Int64 = -1
   private var currentSize: CGSize = CGSize.zero
   private var disposed: Bool = false
@@ -49,6 +50,7 @@ public class VideoOutput: NSObject {
     width = configuration.width
     height = configuration.height
     enableHardwareAcceleration = configuration.enableHardwareAcceleration
+    self.usingHardwareAcceleration = self.enableHardwareAcceleration
     self.registry = registry
     self.textureUpdateCallback = textureUpdateCallback
 
@@ -66,6 +68,34 @@ public class VideoOutput: NSObject {
     disposeTextureId()
   }
 
+  public func switchToSoftwareRendering() {
+    switchRendering(allowHardwareAcceleration: false)
+  }
+
+  public func switchToHardwareRendering() {
+    switchRendering(allowHardwareAcceleration: true)
+  }
+
+  public func switchRendering(allowHardwareAcceleration: Bool) {
+    if !enableHardwareAcceleration || allowHardwareAcceleration == usingHardwareAcceleration {
+      return
+    }
+
+    usingHardwareAcceleration = allowHardwareAcceleration
+
+    NSLog("switchRendering allowHardwareAcceleration: \(allowHardwareAcceleration)")
+    let vid = mpv_get_property_string(handle, "vid")
+    mpv_set_property_string(handle, "vid", "no")
+
+    texture.dispose()
+    disposeTextureId()
+    currentWidth = 0
+    currentHeight = 0
+    _init(allowHardwareAcceleration: allowHardwareAcceleration)
+
+    mpv_set_property_string(handle, "vid", vid)
+  }
+
   public func setSize(width: Int64?, height: Int64?) {
     worker.enqueue {
       self.width = width
@@ -73,12 +103,30 @@ public class VideoOutput: NSObject {
     }
   }
 
-  private func _init() {
+  public func refreshPlaybackState() {}
+
+  func enablePictureInPicture() -> Bool {
+    return false
+  }
+
+  public func disablePictureInPicture() {}
+
+  public func enableAutoPictureInPicture() -> Bool {
+    return false
+  }
+
+  public func disableAutoPictureInPicture() {}
+
+  public func enterPictureInPicture() -> Bool {
+    return false
+  }
+
+  private func _init(allowHardwareAcceleration: Bool = true) {
     let enableHardwareAcceleration =
       VideoOutput.isSimulator ? false : enableHardwareAcceleration
 
     NSLog(
-      "VideoOutput: enableHardwareAcceleration: \(enableHardwareAcceleration)"
+      "VideoOutput: enableHardwareAcceleration: \(enableHardwareAcceleration) allowHardwareAcceleration: \(allowHardwareAcceleration)"
     )
 
     if VideoOutput.isSimulator {
@@ -87,7 +135,7 @@ public class VideoOutput: NSObject {
       )
     }
 
-    if enableHardwareAcceleration {
+    if enableHardwareAcceleration && allowHardwareAcceleration {
       texture = SafeResizableTexture(
         TextureHW(
           handle: handle,
@@ -147,7 +195,7 @@ public class VideoOutput: NSObject {
     }
   }
 
-  private func _updateCallback() {
+  internal func _updateCallback() {
     let size = videoSize
 
     if size.width == 0 || size.height == 0 {

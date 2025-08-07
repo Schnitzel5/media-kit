@@ -55,6 +55,20 @@ public class MediaKitVideoPlugin: NSObject, FlutterPlugin {
       handleCreateMethodCall(call.arguments, result)
     case "VideoOutputManager.SetSize":
       handleSetSizeMethodCall(call.arguments, result)
+    case "VideoOutputManager.IsPictureInPictureAvailable":
+      handleIsPictureInPictureAvailableMethodCall(call.arguments, result)
+    case "VideoOutputManager.EnablePictureInPicture":
+      handleEnablePictureInPictureMethodCall(call.arguments, result)
+    case "VideoOutputManager.DisablePictureInPicture":
+      handleDisablePictureInPictureMethodCall(call.arguments, result)
+    case "VideoOutputManager.EnableAutoPictureInPicture":
+      handleEnableAutoPictureInPictureMethodCall(call.arguments, result)
+    case "VideoOutputManager.DisableAutoPictureInPicture":
+      handleDisableAutoPictureInPictureMethodCall(call.arguments, result)
+    case "VideoOutputManager.EnterPictureInPicture":
+      handleEnterPictureInPictureMethodCall(call.arguments, result)
+    case "VideoOutputManager.RefreshPlaybackState":
+      handleRefreshPlaybackStateMethodCall(call.arguments, result)
     case "VideoOutputManager.Dispose":
       handleDisposeMethodCall(call.arguments, result)
     case "Utils.EnterNativeFullscreen":
@@ -120,6 +134,116 @@ public class MediaKitVideoPlugin: NSObject, FlutterPlugin {
       handle: handle!,
       width: width,
       height: height
+    )
+
+    result(nil)
+  }
+
+  private func handleIsPictureInPictureAvailableMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let ret = videoOutputManager.isPictureInPictureAvailable()
+
+    result(ret)
+  }
+  private func handleEnableAutoPictureInPictureMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    let ret = videoOutputManager.enableAutoPictureInPicture(
+      handle: handle!
+    )
+
+    result(ret)
+  }
+
+  private func handleEnablePictureInPictureMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    let ret = videoOutputManager.enablePictureInPicture(
+      handle: handle!
+    )
+
+    result(ret)
+  }
+
+  private func handleDisablePictureInPictureMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    videoOutputManager.disablePictureInPicture(
+      handle: handle!
+    )
+
+    result(nil)
+  }
+
+  private func handleDisableAutoPictureInPictureMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    videoOutputManager.disableAutoPictureInPicture(
+      handle: handle!
+    )
+
+    result(nil)
+  }
+
+  private func handleEnterPictureInPictureMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    let ret = videoOutputManager.enterPictureInPicture(
+      handle: handle!
+    )
+
+    result(ret)
+  }
+
+  private func handleRefreshPlaybackStateMethodCall(
+    _ arguments: Any?,
+    _ result: FlutterResult
+  ) {
+    let args = arguments as? [String: Any]
+    let handleStr = args?["handle"] as! String
+    let handle: Int64? = Int64(handleStr)
+
+    assert(handle != nil, "handle must be an Int64")
+
+    videoOutputManager.refreshPlaybackState(
+      handle: handle!
     )
 
     result(nil)
