@@ -62,6 +62,10 @@ public class VideoOutput: NSObject {
   }
 
   deinit {
+    dispose()
+  }
+
+  func dispose() {
     worker.cancel()
 
     disposed = true
@@ -87,10 +91,9 @@ public class VideoOutput: NSObject {
     let vid = mpv_get_property_string(handle, "vid")
     mpv_set_property_string(handle, "vid", "no")
 
-    texture.dispose()
     disposeTextureId()
-    currentWidth = 0
-    currentHeight = 0
+    width = 0
+    height = 0
     _init(allowHardwareAcceleration: allowHardwareAcceleration)
 
     mpv_set_property_string(handle, "vid", vid)
