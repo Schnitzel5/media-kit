@@ -54,9 +54,6 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
 
         surfaceProducer = textureRegistryReference.createSurfaceProducer();
         surfaceProducer.setCallback(this);
-
-        // By default, android.graphics.SurfaceTexture has a size of 1x1.
-        setSurfaceSize(1, 1, true);
     }
 
     public void dispose() {
@@ -71,7 +68,7 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
             } catch (Throwable e) {
                 Log.e(TAG, "dispose", e);
             }
-            onSurfaceDestroyed();
+            onSurfaceCleanup();
         }
     }
 
@@ -86,7 +83,7 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
                     return;
                 }
                 surfaceProducer.setSize(width, height);
-                onSurfaceCreated();
+                onSurfaceAvailable();
             } catch (Throwable e) {
                 Log.e(TAG, "setSurfaceSize", e);
             }
@@ -94,9 +91,9 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
     }
 
     @Override
-    public void onSurfaceCreated() {
+    public void onSurfaceAvailable() {
         synchronized (lock) {
-            Log.i(TAG, "onSurfaceCreated");
+            Log.i(TAG, "onSurfaceAvailable");
             id = surfaceProducer.id();
             wid = newGlobalObjectRef(surfaceProducer.getSurface());
             textureUpdateCallback.onTextureUpdate(id, wid, surfaceProducer.getWidth(), surfaceProducer.getHeight());
@@ -104,9 +101,9 @@ public class VideoOutput implements TextureRegistry.SurfaceProducer.Callback {
     }
 
     @Override
-    public void onSurfaceDestroyed() {
+    public void onSurfaceCleanup() {
         synchronized (lock) {
-            Log.i(TAG, "onSurfaceDestroyed");
+            Log.i(TAG, "onSurfaceCleanup");
             textureUpdateCallback.onTextureUpdate(id, 0, surfaceProducer.getWidth(), surfaceProducer.getHeight());
             if (wid != 0) {
                 final long widReference = wid;

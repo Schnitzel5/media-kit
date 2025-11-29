@@ -38,12 +38,37 @@ G_DEFINE_TYPE(VideoOutput, video_output, G_TYPE_OBJECT)
 static void video_output_dispose(GObject* object) {
   VideoOutput* self = VIDEO_OUTPUT(object);
   self->destroyed = TRUE;
+  
+  // Make sure that no more callbacks are invoked from mpv.
+  if (self->render_context) {
+    mpv_render_context_set_update_callback(self->render_context, NULL, NULL);
+  }
+
   // H/W
   if (self->texture_gl) {
     fl_texture_registrar_unregister_texture(self->texture_registrar,
                                             FL_TEXTURE(self->texture_gl));
-    g_object_unref(self->gdk_gl_context);
+    
+    // Make GL context current before freeing mpv_render_context
+    // mpv_render_context_free requires the GL context to be current
+    if (self->gdk_gl_context != NULL && self->render_context != NULL) {
+      GdkGLContext* current_ctx = gdk_gl_context_get_current();
+      gboolean need_restore = (current_ctx != self->gdk_gl_context);
+      if (need_restore) {
+        gdk_gl_context_make_current(self->gdk_gl_context);
+      }
+      mpv_render_context_free(self->render_context);
+      self->render_context = NULL;
+      if (need_restore) {
+        if (current_ctx != NULL) {
+          gdk_gl_context_make_current(current_ctx);
+        } else {
+          gdk_gl_context_clear_current();
+        }
+      }
+    }
     g_object_unref(self->texture_gl);
+    g_object_unref(self->gdk_gl_context);
   }
   // S/W
   if (self->texture_sw) {
@@ -51,8 +76,12 @@ static void video_output_dispose(GObject* object) {
                                             FL_TEXTURE(self->texture_sw));
     g_free(self->pixel_buffer);
     g_object_unref(self->texture_sw);
+    if (self->render_context != NULL) {
+      mpv_render_context_free(self->render_context);
+      self->render_context = NULL;
+    }
   }
-  mpv_render_context_free(self->render_context);
+  
   g_mutex_clear(&self->mutex);
   g_print("media_kit: VideoOutput: video_output_dispose: %ld\n",
           (gint64)self->handle);
@@ -109,6 +138,8 @@ VideoOutput* video_output_new(FlTextureRegistrar* texture_registrar,
       // OpenGL context must be made current before creating mpv render context.
       gdk_gl_context_realize(self->gdk_gl_context, &error);
       if (error == NULL) {
+        // Make the OpenGL context current.
+        gdk_gl_context_make_current(self->gdk_gl_context);
         // Create |FlTextureGL| and register it.
         self->texture_gl = texture_gl_new(self);
         if (fl_texture_registrar_register_texture(
