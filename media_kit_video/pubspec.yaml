@@ -20,7 +20,7 @@ dependencies:
 
   media_kit:
     git:
-      url: https://github.com/Schnitzel5/media-kit.git
+      url: https://github.com/kodjodevf/media-kit.git
       path: media_kit
 
   synchronized: ^3.1.0
@@ -34,8 +34,6 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: ^5.0.0
-
-
 
 flutter:
   plugin:
