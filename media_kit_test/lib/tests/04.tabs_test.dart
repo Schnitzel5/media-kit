@@ -7,7 +7,7 @@ import '../common/globals.dart';
 import '../common/sources/sources.dart';
 
 class TabsTest extends StatelessWidget {
-  const TabsTest({Key? key}) : super(key: key);
+  const TabsTest({super.key});
 
   static const int count = 5;
 

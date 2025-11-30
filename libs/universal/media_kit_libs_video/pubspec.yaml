@@ -1,6 +1,6 @@
 name: media_kit_libs_video
 description: package:media_kit video (& audio) playback native libraries for all platforms.
-version: 1.0.6
+version: 1.0.7
 homepage: https://github.com/media-kit/media-kit.git
 repository: https://github.com/media-kit/media-kit.git
 

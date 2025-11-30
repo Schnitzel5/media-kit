@@ -1,3 +1,12 @@
+## 1.2.2
+
+- feat: allow overriding `PlatformPlayer` in `Player` constructor
+- feat: flutter 3.38.x support
+
+## 1.2.1
+
+- fix: misc issues
+
 ## 1.2.0
 
  - **REFACTOR**: InitializerNativeCallable & InitializerIsolate.
